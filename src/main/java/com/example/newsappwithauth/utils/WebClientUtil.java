@@ -30,23 +30,23 @@ public class WebClientUtil {
                 .reduce(String::concat);  // Combine all chunks into a single string
     }
 
-    public Flux<DataBuffer> externalGetRequestStream(String url) {
-        return webClientBuilder.build()
-                .get()
-                .uri(url)
-                .headers(headers -> headers.set("x-api-key", "01d95c8a53d4405daa4f6887379b4da7"))
-                .retrieve()
-                .bodyToFlux(DataBuffer.class) // Streaming the response body
-                .doOnNext(dataBuffer -> {
-                    // Process each chunk of the response (dataBuffer) as it's received
-                    // Optionally, you can log or transform the data here
-                    System.out.println("Received chunk of size: " + dataBuffer.readableByteCount());
-                })
-                .doOnTerminate(() -> {
-                    // Any final logic to execute after the stream is completed
-                    System.out.println("Streaming completed.");
-                });
-    }
+//    public Flux<DataBuffer> externalGetRequestStream(String url) {
+//        return webClientBuilder.build()
+//                .get()
+//                .uri(url)
+//                .headers(headers -> headers.set("x-api-key", "01d95c8a53d4405daa4f6887379b4da7"))
+//                .retrieve()
+//                .bodyToFlux(DataBuffer.class) // Streaming the response body
+//                .doOnNext(dataBuffer -> {
+//                    // Process each chunk of the response (dataBuffer) as it's received
+//                    // Optionally, you can log or transform the data here
+//                    System.out.println("Received chunk of size: " + dataBuffer.readableByteCount());
+//                })
+//                .doOnTerminate(() -> {
+//                    // Any final logic to execute after the stream is completed
+//                    System.out.println("Streaming completed.");
+//                });
+//    }
 
     // Method to retrieve the full response (using bodyToMono if the response is small enough)
     public String externalGetRequest(String url) {

@@ -1,8 +1,7 @@
 package com.example.newsappwithauth.modal;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.example.newsappwithauth.dto.response.NewsArticleResponse;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,11 +17,38 @@ public class NewsArticle {
     @Id
     private Long id;
 
+    @Column(name = "title", length = 4096)
     private String title;
+
+    @Column(name = "content", length = 4096)
     private String content;
+
+    @Column(name = "summary", columnDefinition = "TEXT")
     private String summary;
+
+    @Column(name = "url", columnDefinition = "TEXT")
     private String url;
-    private String img;
+
+    @Column(name = "image", columnDefinition = "TEXT")
+    private String image;
+
     private String publish_date;
     private String author;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+
+
+    public NewsArticle(NewsArticleResponse newsArticleResponse){
+        this.id = newsArticleResponse.getId();
+        this.title = newsArticleResponse.getTitle();
+        this.content = newsArticleResponse.getContent();
+        this.summary = newsArticleResponse.getSummary();
+        this.url = newsArticleResponse.getUrl();
+        this.image = newsArticleResponse.getImage();
+        this.publish_date = newsArticleResponse.getPublish_date();
+        this.author = newsArticleResponse.getAuthor();
+        this.status = newsArticleResponse.getStatus();
+    }
 }
