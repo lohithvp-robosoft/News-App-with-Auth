@@ -14,4 +14,8 @@ public interface NewsServices {
     ResponseEntity<ResponseDTO<List<NewsArticleResponse>>> getPopularNews();
 
     void updateNewsDatabase() throws JsonProcessingException;
+
+    ResponseEntity<ResponseDTO<List<NewsArticleResponse>>> getTopHeadlinesNews();
+
+    ResponseEntity<ResponseDTO<List<NewsArticleResponse>>> getSearchedNews(String topic) throws JsonProcessingException;
 }

@@ -17,10 +17,10 @@ public class NewsArticle {
     @Id
     private Long id;
 
-    @Column(name = "title", length = 4096)
+    @Column(name = "title", columnDefinition = "TEXT")
     private String title;
 
-    @Column(name = "content", length = 4096)
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "summary", columnDefinition = "TEXT")

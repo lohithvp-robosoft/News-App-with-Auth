@@ -26,4 +26,8 @@ public interface NewsRepository extends JpaRepository<NewsArticle,Long> {
     @Transactional
     @Query("UPDATE NewsArticle na SET na.status = :newStatus WHERE na.id IN :ids")
     void updateStatusBatch(List<Long> ids, Status newStatus);
+
+//    List<NewsArticle> findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(String title, String content);
+
+    List<NewsArticle> findByTitleContainingIgnoreCase(String title);
 }

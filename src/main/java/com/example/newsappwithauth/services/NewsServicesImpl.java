@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -36,63 +37,92 @@ public class NewsServicesImpl implements NewsServices {
 
     private static final int BATCH_SIZE = 50;
 
+    @Value("${url.updateNewsDb}")
+    private String urlForUpdateDb;
+
+    @Value("${url.searchNews}")
+    private String urlForSearch;
+
+
     @Override
     public ResponseEntity<ResponseDTO<List<NewsArticleResponse>>> getPopularNews() {
-        List<NewsArticle> responseList = newsRepository.findByStatus(Status.POPULAR);
-
-        List<NewsArticleResponse> newsList = new ArrayList<>();
-        log.info(newsList);
-        responseList.forEach(article ->
-                {
-                    NewsArticleResponse response = new NewsArticleResponse(article);
-                    newsList.add(response);
-                }
-        );
-        return responseUtil.successResponse(newsList);
+        return responseUtil.successResponse(geNewsFromDB(newsRepository.findByStatus(Status.POPULAR)));
     }
 
     @Transactional
     @Override
     public void updateNewsDatabase() throws JsonProcessingException {
+        long dbSize = newsRepository.count();
         ObjectMapper objectMapper = new ObjectMapper();
-        String responseJson = webClientUtil.externalGetRequestStreamAsString("https://api.worldnewsapi.com/top-news?source-country=in&language=en").block();
-
-        JsonNode rootNode = objectMapper.readTree(responseJson);
-        JsonNode newsListNode = rootNode.get("top_news").get(0).get("news");
-        newsRepository.updateStatus(Status.TOP_HEADLINES,Status.POPULAR);
-
-//        for(JsonNode article : newsListNode){
-//            NewsArticleResponse newsArticleResponse = objectMapper.readValue(article.toString(),NewsArticleResponse.class);
-//            if(newsRepository.existsById(newsArticleResponse.getId())){
-//                newsRepository.updateStatusById(newsArticleResponse.getId(),Status.TOP_HEADLINES);
-//            }else{
-//                newsArticleResponse.setStatus(Status.TOP_HEADLINES);
-//                NewsArticle newsArticle = new NewsArticle(newsArticleResponse);
-//                newsRepository.save(newsArticle);
-//            }
-//        }
+        JsonNode topNews = getResponseJsonFromURL(urlForUpdateDb, "top_news");
 
         List<Long> idsToUpdate = new ArrayList<>();
-        for (JsonNode article : newsListNode) {
-            NewsArticleResponse newsArticleResponse = objectMapper.readValue(article.toString(), NewsArticleResponse.class);
 
-            if (newsRepository.existsById(newsArticleResponse.getId())) {
-                idsToUpdate.add(newsArticleResponse.getId());
+        for (JsonNode topNewsList : topNews) {
+            JsonNode newsList = topNewsList.get("news");
+            if (!newsList.isEmpty()) {
+                JsonNode latestNews = newsList.get(newsList.size() - 1);
+                log.debug("LatestNews {}", latestNews);
+                NewsArticleResponse newsArticleResponse = objectMapper.readValue(latestNews.toString(), NewsArticleResponse.class);
+                if (newsRepository.existsById(newsArticleResponse.getId())) {
+                    idsToUpdate.add(newsArticleResponse.getId());
 
-                if (idsToUpdate.size() >= BATCH_SIZE) {
-                    newsRepository.updateStatusBatch(idsToUpdate, Status.TOP_HEADLINES);
-                    idsToUpdate.clear();
+                    if (idsToUpdate.size() >= BATCH_SIZE) {
+                        newsRepository.updateStatusBatch(idsToUpdate, Status.TOP_HEADLINES);
+                        idsToUpdate.clear();
+                    }
+                } else {
+                    newsArticleResponse.setStatus(Status.TOP_HEADLINES);
+                    NewsArticle newsArticle = new NewsArticle(newsArticleResponse);
+                    newsRepository.save(newsArticle);
                 }
             } else {
-
-                newsArticleResponse.setStatus(Status.TOP_HEADLINES);
-                NewsArticle newsArticle = new NewsArticle(newsArticleResponse);
-                newsRepository.save(newsArticle);
+                log.warn("Empty news list encountered");
             }
         }
-
         if (!idsToUpdate.isEmpty()) {
             newsRepository.updateStatusBatch(idsToUpdate, Status.TOP_HEADLINES);
         }
+        log.info("{} new News Article is add", newsRepository.count() - dbSize);
+    }
+
+    @Override
+    public ResponseEntity<ResponseDTO<List<NewsArticleResponse>>> getTopHeadlinesNews() {
+        return responseUtil.successResponse(geNewsFromDB(newsRepository.findByStatus(Status.TOP_HEADLINES)));
+    }
+
+    @Override
+    public ResponseEntity<ResponseDTO<List<NewsArticleResponse>>> getSearchedNews(String topic) throws JsonProcessingException {
+
+        List<NewsArticleResponse> newsList = geNewsFromDB(newsRepository.findByTitleContainingIgnoreCase(topic));
+
+        if (newsList.isEmpty()) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode searchedNewsList = getResponseJsonFromURL(String.format(urlForSearch, topic), "news");
+
+            for (JsonNode news : searchedNewsList) {
+                NewsArticleResponse seachedNewsArticleResponse = objectMapper.readValue(news.toString(), NewsArticleResponse.class);
+                newsList.add(seachedNewsArticleResponse);
+            }
+        }
+        return responseUtil.successResponse(newsList);
+    }
+
+    public List<NewsArticleResponse> geNewsFromDB(List<NewsArticle> newsListFromDB) {
+        List<NewsArticleResponse> newsList = new ArrayList<>();
+        newsListFromDB.forEach(article ->
+                {
+                    NewsArticleResponse response = new NewsArticleResponse(article);
+                    newsList.add(response);
+                }
+        );
+        return newsList;
+    }
+
+    public JsonNode getResponseJsonFromURL(String url, String key) throws JsonProcessingException {
+        String responseJson = webClientUtil.externalGetRequestStreamAsString(url).block();
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode rootNode = objectMapper.readTree(responseJson);
+        return rootNode.get(key);
     }
 }

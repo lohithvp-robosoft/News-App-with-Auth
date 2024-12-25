@@ -12,7 +12,7 @@ public class ResponseUtil {
         return new ResponseEntity<>(new ResponseDTO<>(0, 200, "Success", responseData), HttpStatus.OK);
     }
 
-    public <T> ResponseEntity<ResponseDTO<?>> errorResponse(T responseData) {
+    public ResponseEntity<ResponseDTO<?>> errorResponse() {
         return new ResponseEntity<>(new ResponseDTO<>(-1, 404, "Fail", null), HttpStatus.NOT_FOUND);
     }
 }

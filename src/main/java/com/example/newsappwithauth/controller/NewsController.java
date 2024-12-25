@@ -12,15 +12,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/news")
 public class NewsController {
 
     @Autowired
@@ -40,7 +38,7 @@ public class NewsController {
         JsonNode rootNode = objectMapper.readTree(responseJson);
         JsonNode newsListNode = rootNode.get("top_news").get(0).get("news");
         List<NewsArticleResponse> lst = new ArrayList<>();
-        for(JsonNode article: newsListNode){
+        for (JsonNode article : newsListNode) {
             NewsArticleResponse newsArticleResponse = objectMapper.readValue(article.toString(), NewsArticleResponse.class);
             newsArticleResponse.setStatus(Status.POPULAR);
             lst.add(newsArticleResponse);
@@ -50,9 +48,19 @@ public class NewsController {
         return lst;
     }
 
-
-    @GetMapping("/v1/news")
-    public ResponseEntity<ResponseDTO<List<NewsArticleResponse>>> getAllNews(){
+    @GetMapping("/v1/popular")
+    public ResponseEntity<ResponseDTO<List<NewsArticleResponse>>> getPopularNews() {
         return newsServices.getPopularNews();
     }
+
+    @GetMapping("/v1/top-headlines")
+    public ResponseEntity<ResponseDTO<List<NewsArticleResponse>>> getTopHeadlinesNews() {
+        return newsServices.getTopHeadlinesNews();
+    }
+
+    @GetMapping("/v1/search")
+    public ResponseEntity<ResponseDTO<List<NewsArticleResponse>>> getSearchedNews(@RequestParam String topic) throws JsonProcessingException {
+        return newsServices.getSearchedNews(topic);
+    }
+
 }
