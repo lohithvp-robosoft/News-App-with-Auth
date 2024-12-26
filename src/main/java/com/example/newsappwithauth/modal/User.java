@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-//@AllArgsConstructor
+@Log4j2
 public class User {
 
     @Id
@@ -51,16 +52,26 @@ public class User {
 
     public User(UserRequest userRequest){
         this.email = userRequest.getEmail();
-        this.password = userRequest.getPassword();;
-        this.roles = userRequest.getRoles();
+        this.password = userRequest.getPassword();
+
+        if (userRequest.getRoles() == null || userRequest.getRoles().isEmpty()) {
+            log.info("No roles provided, setting default role");
+            this.roles.add(Role.USER);
+        } else {
+            this.roles = userRequest.getRoles();
+        }
+
+        log.info("Assigned roles: {}", this.roles);
     }
 
-//    public User(String email, String password, List<Role> roles) {
-//        this.email = email;
-//        this.password = password;
-//        if (roles.isEmpty()) {
-//            roles.add(Role.ROLE_USER);
-//        }
-//        this.roles = roles;
-//    }
+    public User(String email, String password, List<Role> roles) {
+        this.email = email;
+        this.password = password;
+        if (roles == null ||roles.isEmpty()) {
+            log.info("No roles provided, setting default role");
+            this.roles.add(Role.USER);
+        } else {
+            this.roles = roles;
+        }
+    }
 }

@@ -8,12 +8,15 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@Log4j2
 public class UserRequest {
     @Email(message = "Invalid email format")
     @NotBlank(message = "Email cannot be blank")
@@ -27,14 +30,11 @@ public class UserRequest {
     )
     private String password;
 
-    private List<Role> roles;
+    private List<Role> roles = new ArrayList<>();
 
     public UserRequest(String email, String password, List<Role> roles) {
         this.email = email;
         this.password = password;
-        if (roles.isEmpty()) {
-            roles.add(Role.ROLE_USER);
-        }
         this.roles = roles;
     }
 }
