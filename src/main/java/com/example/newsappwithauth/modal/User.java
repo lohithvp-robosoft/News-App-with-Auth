@@ -1,5 +1,6 @@
 package com.example.newsappwithauth.modal;
 
+import com.example.newsappwithauth.dto.request.UserRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 public class User {
 
     @Id
@@ -47,4 +48,19 @@ public class User {
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+    public User(UserRequest userRequest){
+        this.email = userRequest.getEmail();
+        this.password = userRequest.getPassword();;
+        this.roles = userRequest.getRoles();
+    }
+
+//    public User(String email, String password, List<Role> roles) {
+//        this.email = email;
+//        this.password = password;
+//        if (roles.isEmpty()) {
+//            roles.add(Role.ROLE_USER);
+//        }
+//        this.roles = roles;
+//    }
 }

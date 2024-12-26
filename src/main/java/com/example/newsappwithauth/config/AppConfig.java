@@ -42,15 +42,16 @@ public class AppConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
-                        .requestMatchers("/api/v1/register").permitAll()
-                        .requestMatchers("/api/v1/login").permitAll()
-                        .requestMatchers("/swagger-ui.html").permitAll()
-                        .requestMatchers("/swagger-ui/index.html").permitAll()
-                        .requestMatchers("/api/admin").hasRole("ADMIN")
-                        .requestMatchers("/api/user").hasRole("USER")
-                        .requestMatchers("/api/v1/delete-employee").hasRole("ADMIN")
-                        .requestMatchers("/error", "/error/**").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
+//                        .requestMatchers("/api/v1/register").permitAll()
+//                        .requestMatchers("/api/v1/login").permitAll()
+//                        .requestMatchers("/swagger-ui.html").permitAll()
+//                        .requestMatchers("/swagger-ui/index.html").permitAll()
+//                        .requestMatchers("/api/admin").hasRole("ADMIN")
+//                        .requestMatchers("/api/user").hasRole("USER")
+//                        .requestMatchers("/api/v1/delete-employee").hasRole("ADMIN")
+//                        .requestMatchers("/error", "/error/**").permitAll()
+//                        .anyRequest().authenticated()
         );
 
         http.sessionManagement(session ->
