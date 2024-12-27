@@ -34,6 +34,11 @@ public class Bookmark {
     @JoinColumn(name = "article_id", nullable = false)
     private NewsArticle newsArticle;
 
+    public Bookmark(User user, NewsArticle newsArticle){
+        this.user = user;
+        this.newsArticle = newsArticle;
+    }
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 

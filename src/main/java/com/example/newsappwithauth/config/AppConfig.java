@@ -47,8 +47,8 @@ public class AppConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
+                        .requestMatchers("/api/user/v1/add-bookmark/{newsId}").authenticated()
                         .anyRequest().permitAll()
-//                        .requestMatchers("/api/news/v1/search").authenticated()
 //                        .requestMatchers("/api/v1/login").permitAll()
 //                        .requestMatchers("/swagger-ui.html").permitAll()
 //                        .requestMatchers("/swagger-ui/index.html").permitAll()

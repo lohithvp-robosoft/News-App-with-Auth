@@ -63,6 +63,12 @@ public class JwtUtils {
     }
 
     public String getUserIdFromJwtToken(String token) {
+//        Object id = getPayloadFromJwtToken(token).get("id");
+//
+//        if (id != null) {
+//            return Long.valueOf(id.toString());
+//        }
+//        return null;
         return getPayloadFromJwtToken(token).get("id").toString();
     }
 

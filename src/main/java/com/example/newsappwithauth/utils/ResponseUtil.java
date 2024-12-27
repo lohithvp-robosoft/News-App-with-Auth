@@ -12,6 +12,9 @@ public class ResponseUtil {
     public <T> ResponseEntity<ResponseDTO<T>> successResponse(T responseData) {
         return new ResponseEntity<>(new ResponseDTO<>(0, 200, "Success", responseData), HttpStatus.OK);
     }
+    public <T> ResponseEntity<ResponseDTO<T>> successResponse(T responseData, String message) {
+        return new ResponseEntity<>(new ResponseDTO<>(0, 200, message, responseData), HttpStatus.OK);
+    }
 
     public ResponseEntity<ResponseDTO<?>> errorResponse() {
         return new ResponseEntity<>(new ResponseDTO<>(-1, 404, "Fail", null), HttpStatus.NOT_FOUND);
