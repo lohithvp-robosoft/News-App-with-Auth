@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Log4j2
 @Service
@@ -83,7 +84,7 @@ public class NewsServicesImpl implements NewsServices {
         if (!idsToUpdate.isEmpty()) {
             newsRepository.updateStatusBatch(idsToUpdate, Status.TOP_HEADLINES);
         }
-        log.info("{} new News Article is add", newsRepository.count() - dbSize);
+        log.info("{} new News Articles are added", newsRepository.count() - dbSize);
     }
 
     @Override
@@ -106,6 +107,12 @@ public class NewsServicesImpl implements NewsServices {
             }
         }
         return responseUtil.successResponse(newsList);
+    }
+
+    @Override
+    public ResponseEntity<ResponseDTO<NewsArticleResponse>> getOneNewsArticleById(long id) {
+        Optional<NewsArticle> newsArticle = newsRepository.findById(id);
+        return newsArticle.map(article -> responseUtil.successResponse(new NewsArticleResponse(article))).orElse(responseUtil.errorResponse("News Not found"));
     }
 
     public List<NewsArticleResponse> geNewsFromDB(List<NewsArticle> newsListFromDB) {

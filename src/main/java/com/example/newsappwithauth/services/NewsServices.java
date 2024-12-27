@@ -18,4 +18,6 @@ public interface NewsServices {
     ResponseEntity<ResponseDTO<List<NewsArticleResponse>>> getTopHeadlinesNews();
 
     ResponseEntity<ResponseDTO<List<NewsArticleResponse>>> getSearchedNews(String topic) throws JsonProcessingException;
+
+    ResponseEntity<ResponseDTO<NewsArticleResponse>> getOneNewsArticleById(long id);
 }
