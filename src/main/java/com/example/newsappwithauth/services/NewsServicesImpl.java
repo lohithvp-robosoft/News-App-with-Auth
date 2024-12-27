@@ -59,6 +59,8 @@ public class NewsServicesImpl implements NewsServices {
 
         List<Long> idsToUpdate = new ArrayList<>();
 
+        newsRepository.updateStatus(Status.TOP_HEADLINES,Status.POPULAR);
+
         for (JsonNode topNewsList : topNews) {
             JsonNode newsList = topNewsList.get("news");
             if (!newsList.isEmpty()) {
