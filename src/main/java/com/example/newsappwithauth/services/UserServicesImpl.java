@@ -6,6 +6,7 @@ import com.example.newsappwithauth.dto.response.ResponseDTO;
 import com.example.newsappwithauth.dto.response.UserLoginResponse;
 import com.example.newsappwithauth.dto.response.UserRegisterResponse;
 import com.example.newsappwithauth.exception.EmailAlreadyExistsException;
+import com.example.newsappwithauth.exception.UserNotFound;
 import com.example.newsappwithauth.jwt.JwtUtils;
 import com.example.newsappwithauth.modal.Bookmark;
 import com.example.newsappwithauth.modal.NewsArticle;
@@ -115,24 +116,34 @@ public class UserServicesImpl implements UserServices {
     }
 
     @Override
-    public Object getAllBookMarkOfUser(HttpServletRequest request) {
+    public ResponseEntity<ResponseDTO<List<NewsArticleResponse>>> getAllBookMarkOfUser(HttpServletRequest request) {
         String token = jwtUtils.getJwtFromHeader(request);
-        log.info("Token {}",token);
+        log.info("Token {}", token);
         Optional<User> optionalUser = userRepository.findById(Long.valueOf(jwtUtils.getUserIdFromJwtToken(token)));
-        if(optionalUser.isPresent()){
+        if (optionalUser.isPresent()) {
             long userId = optionalUser.get().getId();
             List<Bookmark> bookmarkList = bookmarkRepository.findByUser_Id(userId);
-            if(bookmarkList.isEmpty()){
+            if (bookmarkList.isEmpty()) {
                 return responseUtil.successResponse(null, "There is no bookmark");
-            }else{
+            } else {
                 List<NewsArticleResponse> newsArticleList = new ArrayList<>();
-                for(Bookmark bookmark : bookmarkList){
+                for (Bookmark bookmark : bookmarkList) {
                     NewsArticle newsArticle = newsRepository.findById(bookmark.getNewsArticle().getId()).get();
                     newsArticleList.add(new NewsArticleResponse(newsArticle));
                 }
                 return responseUtil.successResponse(newsArticleList);
             }
         }
-        return null;
+        return responseUtil.errorResponse("Could not get the book mark");
+    }
+
+    @Override
+    public ResponseEntity<ResponseDTO<Object>> resetPassword(String email, String newPassword) {
+        Optional<User> optionalUser = Optional.ofNullable(userRepository.findByEmail(email).orElseThrow(UserNotFound::new));
+        User user = optionalUser.get();
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedPassword);
+        userRepository.save(user);
+        return responseUtil.successResponse(null, "Successfully updated the password");
     }
 }

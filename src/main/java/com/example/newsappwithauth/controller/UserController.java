@@ -1,6 +1,7 @@
 package com.example.newsappwithauth.controller;
 
 import com.example.newsappwithauth.dto.request.UserRequest;
+import com.example.newsappwithauth.dto.response.NewsArticleResponse;
 import com.example.newsappwithauth.dto.response.ResponseDTO;
 import com.example.newsappwithauth.dto.response.UserLoginResponse;
 import com.example.newsappwithauth.dto.response.UserRegisterResponse;
@@ -10,6 +11,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -34,7 +37,7 @@ public class UserController {
     }
 
     @GetMapping("/v1/all-bookmark")
-    public Object getAllBookMarkOfUser(HttpServletRequest request){
+    public ResponseEntity<ResponseDTO<List<NewsArticleResponse>>> getAllBookMarkOfUser(HttpServletRequest request){
         return userServices.getAllBookMarkOfUser(request);
     }
 }

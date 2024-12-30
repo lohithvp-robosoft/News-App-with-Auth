@@ -30,6 +30,11 @@ public class ExceptionHandler {
         return new ResponseEntity<>(new ResponseDTO<>(-1, 500, "Internal Server Error: " + ex.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(value = {UserNotFound.class})
+    public ResponseEntity<ResponseDTO<?>> handleUserNotFoundException(Exception ex) {
+        return new ResponseEntity<>(new ResponseDTO<>(-1, 404, "User Not found", null), HttpStatus.NOT_FOUND);
+    }
+
     @org.springframework.web.bind.annotation.ExceptionHandler(value = {MethodArgumentNotValidException.class})
     public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException  ex) {
         Map<String, String> errors = new HashMap<>();
