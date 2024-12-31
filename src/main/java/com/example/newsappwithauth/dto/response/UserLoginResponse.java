@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserLoginResponse {
     private String email;
+    private String userName;
     private List<Role> roles;
     private String token;
 }

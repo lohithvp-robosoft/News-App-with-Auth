@@ -45,7 +45,7 @@ public class JwtUtils {
         return Jwts.builder()
                 .claim("id", id)
                 .claim("username", userDetails.getUsername())
-                .claim("iat", nowMillis / 1000) // Issued at in seconds since epoch
+                .claim("iat", nowMillis / 1000)
                 .claim("exp", expMillis / 1000)
                 .signWith(key())
                 .compact();

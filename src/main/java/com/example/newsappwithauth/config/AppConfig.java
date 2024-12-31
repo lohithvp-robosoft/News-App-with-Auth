@@ -50,7 +50,7 @@ public class AppConfig {
         http.authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
 //                        .requestMatchers("/api/user/v1/send-otp").permitAll()
-                                .requestMatchers("/api/user/v1/add-bookmark/{newsId}").authenticated()
+                                .requestMatchers("/api/user/v1/add-bookmark/**").authenticated()
                                 .requestMatchers("/api/user/v1/all-bookmark").authenticated()
                                 .anyRequest().permitAll()
         );
@@ -97,13 +97,13 @@ public class AppConfig {
     }
 
     @Value("${url.frontend}")
-    private String frontendUrl;  // Inject the frontend URL from application properties
+    private String frontendUrl;
 
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.setAllowedOrigins(Collections.singletonList(frontendUrl));  // Use the dynamic URL
-        corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD")); // Allow specific HTTP methods
+        corsConfig.setAllowedOrigins(Collections.singletonList(frontendUrl));
+        corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"));
         corsConfig.setAllowedHeaders(Collections.singletonList("Authorization"));
         corsConfig.setAllowCredentials(true);  // If you need cookies to be sent along with the request
 

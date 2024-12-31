@@ -43,7 +43,7 @@ public class UserController {
     private String mailChangePasswordContent;
 
     @PostMapping("/v1/send-reg-otp")
-    public ResponseEntity<ResponseDTO<Object>> sendOtpForRegistration(@RequestBody UserRequest userRequest) {
+    public ResponseEntity<ResponseDTO<Object>> sendOtpForRegistration(@Valid @RequestBody UserRequest userRequest) {
         return otpServices.sendOtp(userRequest.getEmail(), mailRegSubject, mailRegContent);
     }
 
@@ -57,7 +57,7 @@ public class UserController {
         return userServices.loginUser(userRequest);
     }
 
-    @GetMapping("/v1/bookmark/{newsId}")
+    @GetMapping("/v1/add-bookmark/{newsId}")
     public ResponseEntity<ResponseDTO<Object>> addABookMark(@PathVariable Long newsId, HttpServletRequest request) {
         return userServices.toggleBookMarkArticle(newsId, request);
     }

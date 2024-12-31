@@ -22,6 +22,9 @@ public class UserRequest {
     @NotBlank(message = "Email cannot be blank")
     private String email;
 
+    @NotBlank(message = "Username cannot be blank")
+    private String userName;
+
     @Size(min = 6, message = "Password must have at least 6 characters")
     @NotBlank(message = "Password cannot be blank")
     @Pattern(
@@ -32,8 +35,9 @@ public class UserRequest {
 
     private List<Role> roles = new ArrayList<>();
 
-    public UserRequest(String email, String password, List<Role> roles) {
+    public UserRequest(String email, String userName, String password, List<Role> roles) {
         this.email = email;
+        this.userName = userName;
         this.password = password;
         this.roles = roles;
     }

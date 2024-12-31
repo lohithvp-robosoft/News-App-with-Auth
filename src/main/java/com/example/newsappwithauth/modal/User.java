@@ -2,7 +2,6 @@ package com.example.newsappwithauth.modal;
 
 import com.example.newsappwithauth.dto.request.UserRequest;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +24,9 @@ public class User {
 
     @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false, unique = true)
+    private String username;
 
     @Column(nullable = false)
     private String password;
@@ -53,6 +55,7 @@ public class User {
     public User(UserRequest userRequest) {
         this.email = userRequest.getEmail();
         this.password = userRequest.getPassword();
+        this.username = userRequest.getUserName();
 
         if (userRequest.getRoles() == null || userRequest.getRoles().isEmpty()) {
             log.info("No roles provided, setting default role");
@@ -64,8 +67,9 @@ public class User {
         log.info("Assigned roles: {}", this.roles);
     }
 
-    public User(String email, String password, List<Role> roles) {
+    public User(String email, String userName, String password, List<Role> roles) {
         this.email = email;
+        this.username = userName;
         this.password = password;
         if (roles == null || roles.isEmpty()) {
             log.info("No roles provided, setting default role");

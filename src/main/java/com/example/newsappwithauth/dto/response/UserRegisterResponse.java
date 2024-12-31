@@ -13,10 +13,12 @@ import java.util.List;
 @AllArgsConstructor
 public class UserRegisterResponse {
     private String email;
+    private String userName;
     private List<Role> roles;
 
     public UserRegisterResponse(User user) {
         this.email = user.getEmail();
+        this.userName = user.getUsername();
         this.roles = user.getRoles();
     }
 }

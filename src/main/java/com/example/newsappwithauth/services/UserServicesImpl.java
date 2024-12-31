@@ -72,12 +72,12 @@ public class UserServicesImpl implements UserServices {
             if (userRepository.existsByEmail(userRequest.getEmail())) {
                 throw new EmailAlreadyExistsException("Email is already taken. Please choose another one.");
             }
-            User newUser = new User(userRequest.getEmail(), passwordEncoder.encode(userRequest.getPassword()), userRequest.getRoles());
+            User newUser = new User(userRequest.getEmail(), userRequest.getUserName(), passwordEncoder.encode(userRequest.getPassword()), userRequest.getRoles());
             log.info("User Role : {}", newUser.getRoles());
             userRepository.save(newUser);
             UserRegisterResponse userRegisterResponse = new UserRegisterResponse(newUser);
 
-            emailHandler.sendMail(userRequest.getEmail(), mailRegSuccessSubject, mailRegSuccessContent);
+            emailHandler.sendMail(userRequest.getEmail(), mailRegSuccessSubject, "Hi, "+newUser.getUsername()+"\n\n"+mailRegSuccessContent);
             return responseUtil.successResponse(userRegisterResponse);
         } else {
             return responseUtil.errorResponse("Invalid OTP " + otp);
@@ -105,7 +105,7 @@ public class UserServicesImpl implements UserServices {
                 .build();
 
         String token = jwtUtils.generateTokenFromUserDetails(userDetails, user.getId().toString());
-        return responseUtil.successResponse(new UserLoginResponse(user.getEmail(), user.getRoles(), token));
+        return responseUtil.successResponse(new UserLoginResponse(user.getEmail(), user.getUsername(), user.getRoles(), token));
     }
 
     @Override
@@ -162,6 +162,9 @@ public class UserServicesImpl implements UserServices {
         if (isValidOtp) {
             Optional<User> optionalUser = Optional.ofNullable(userRepository.findByEmail(resetPasswordRequest.getEmail()).orElseThrow(UserNotFound::new));
             User user = optionalUser.get();
+            if(!resetPasswordRequest.getNewPassword().equals(resetPasswordRequest.getConfirmNewPassword())){
+                return responseUtil.errorResponse("Both password does not match");
+            }
             String encodedPassword = passwordEncoder.encode(resetPasswordRequest.getNewPassword());
             user.setPassword(encodedPassword);
             userRepository.save(user);
