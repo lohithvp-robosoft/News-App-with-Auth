@@ -15,7 +15,7 @@ public class UserRegisterResponse {
     private String email;
     private List<Role> roles;
 
-    public UserRegisterResponse(User user){
+    public UserRegisterResponse(User user) {
         this.email = user.getEmail();
         this.roles = user.getRoles();
     }

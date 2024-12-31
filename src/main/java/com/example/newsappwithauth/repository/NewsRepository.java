@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public interface NewsRepository extends JpaRepository<NewsArticle,Long> {
+public interface NewsRepository extends JpaRepository<NewsArticle, Long> {
     List<NewsArticle> findByStatus(Status status);
 
     @Modifying
@@ -27,7 +27,6 @@ public interface NewsRepository extends JpaRepository<NewsArticle,Long> {
     @Query("UPDATE NewsArticle na SET na.status = :newStatus WHERE na.id IN :ids")
     void updateStatusBatch(List<Long> ids, Status newStatus);
 
-//    List<NewsArticle> findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(String title, String content);
 
     List<NewsArticle> findByTitleContainingIgnoreCase(String title);
 }

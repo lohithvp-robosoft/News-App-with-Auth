@@ -28,7 +28,7 @@ public class NewsArticleResponse {
     private String author;
     private Status status;
 
-    public NewsArticleResponse(NewsArticle newsArticle){
+    public NewsArticleResponse(NewsArticle newsArticle) {
         this.id = newsArticle.getId();
         this.title = newsArticle.getTitle();
         this.content = newsArticle.getContent();

@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,9 +30,21 @@ public class UserController {
     @Autowired
     private OtpServices otpServices;
 
+    @Value("${mail.registration.subject}")
+    private String mailRegSubject;
+
+    @Value("${mail.registration.content}")
+    private String mailRegContent;
+
+    @Value("${mail.changePassword.subject}")
+    private String mailChangePasswordSubject;
+
+    @Value("${mail.changePassword.content}")
+    private String mailChangePasswordContent;
+
     @PostMapping("/v1/send-reg-otp")
     public ResponseEntity<ResponseDTO<Object>> sendOtpForRegistration(@RequestBody UserRequest userRequest) {
-        return otpServices.sendOtp(userRequest.getEmail(), "Your OTP for Registration", "\"Use the following OTP to complete your registration: ");
+        return otpServices.sendOtp(userRequest.getEmail(), mailRegSubject, mailRegContent);
     }
 
     @PostMapping("/v1/register")
@@ -56,7 +69,7 @@ public class UserController {
 
     @PostMapping("/v1/forgot-password")
     public ResponseEntity<ResponseDTO<Object>> forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
-        return otpServices.sendOtp(forgotPasswordRequest.getEmail(), "Your OTP for Changing the password", "\"Use the following OTP to change password: ");
+        return otpServices.sendOtp(forgotPasswordRequest.getEmail(), mailChangePasswordSubject, mailChangePasswordContent);
     }
 
     @PostMapping("/v1/reset-password")

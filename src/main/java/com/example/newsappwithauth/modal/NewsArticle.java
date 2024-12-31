@@ -39,8 +39,7 @@ public class NewsArticle {
     private Status status;
 
 
-
-    public NewsArticle(NewsArticleResponse newsArticleResponse){
+    public NewsArticle(NewsArticleResponse newsArticleResponse) {
         this.id = newsArticleResponse.getId();
         this.title = newsArticleResponse.getTitle();
         this.content = newsArticleResponse.getContent();

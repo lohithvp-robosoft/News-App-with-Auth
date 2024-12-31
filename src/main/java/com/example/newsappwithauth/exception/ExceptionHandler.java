@@ -35,10 +35,14 @@ public class ExceptionHandler {
         return new ResponseEntity<>(new ResponseDTO<>(-1, 404, "User Not found", null), HttpStatus.NOT_FOUND);
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(value = {MailAunthenticationException.class})
+    public ResponseEntity<ResponseDTO<?>> handleMailAuthException(Exception ex) {
+        return new ResponseEntity<>(new ResponseDTO<>(-1, 401, "Mail Authentication failed with error", null), HttpStatus.UNAUTHORIZED);
+    }
+
     @org.springframework.web.bind.annotation.ExceptionHandler(value = {MethodArgumentNotValidException.class})
-    public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException  ex) {
+    public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
-        // Extract field errors
         ex.getBindingResult().getFieldErrors().forEach(error ->
                 errors.put(error.getField(), error.getDefaultMessage())
         );

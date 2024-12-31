@@ -50,7 +50,7 @@ public class User {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public User(UserRequest userRequest){
+    public User(UserRequest userRequest) {
         this.email = userRequest.getEmail();
         this.password = userRequest.getPassword();
 
@@ -67,7 +67,7 @@ public class User {
     public User(String email, String password, List<Role> roles) {
         this.email = email;
         this.password = password;
-        if (roles == null ||roles.isEmpty()) {
+        if (roles == null || roles.isEmpty()) {
             log.info("No roles provided, setting default role");
             this.roles.add(Role.USER);
         } else {

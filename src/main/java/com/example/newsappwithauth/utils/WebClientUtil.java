@@ -24,7 +24,7 @@ public class WebClientUtil {
         return webClientBuilder.build()
                 .get()
                 .uri(url)
-                .headers(headers -> headers.set("x-api-key",apiKey))
+                .headers(headers -> headers.set("x-api-key", apiKey))
                 .retrieve()
                 .bodyToFlux(DataBuffer.class)
                 .map(dataBuffer -> {

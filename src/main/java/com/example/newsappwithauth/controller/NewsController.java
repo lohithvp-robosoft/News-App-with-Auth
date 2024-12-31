@@ -64,7 +64,7 @@ public class NewsController {
     }
 
     @GetMapping("/v1/article/{id}")
-    public ResponseEntity<ResponseDTO<NewsArticleResponse>> getArticleById(@PathVariable long id){
+    public ResponseEntity<ResponseDTO<NewsArticleResponse>> getArticleById(@PathVariable long id) {
         return newsServices.getOneNewsArticleById(id);
     }
 }

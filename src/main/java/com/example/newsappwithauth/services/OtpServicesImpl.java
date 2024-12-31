@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @Log4j2
-public class OtpServicesImpl implements OtpServices{
+public class OtpServicesImpl implements OtpServices {
 
     private static final long OTP_EXPIRATION_TIME = 5 * 60 * 1000;
 
@@ -28,19 +28,17 @@ public class OtpServicesImpl implements OtpServices{
     private ResponseUtil responseUtil;
 
     @Override
-    public ResponseEntity<ResponseDTO<Object>> sendOtp(String email,String subject, String content) {
-//        log.debug("RECIEVED THE EMAIL {}",email);
+    public ResponseEntity<ResponseDTO<Object>> sendOtp(String email, String subject, String content) {
         String otp = generateOtp();
-//        log.debug("Generated the Otp {}",otp);
-        emailHandler.sendMail(email,otp,"Your OTP for Registration","\"Use the following OTP to complete your registration: " + otp);
+        emailHandler.sendMail(email, subject, content + " " + otp);
         storeOtpInRedis(email, otp);
-        return responseUtil.successResponse(null,"Successfully sent the email to "+email);
+        return responseUtil.successResponse(null, "Successfully sent the email to " + email);
     }
 
     @Override
     public String generateOtp() {
         Random random = new Random();
-        return String.valueOf(random.nextInt(100_000,999_999));
+        return String.valueOf(random.nextInt(100_000, 999_999));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.newsappwithauth.utils;
 
+import com.example.newsappwithauth.exception.MailAunthenticationException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +19,10 @@ public class EmailHandler {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
-    public void sendMail(String toEmail, String otp, String subject, String emailContent) {
+    @Autowired
+    private ResponseUtil responseUtil;
+
+    public void sendMail(String toEmail, String subject, String emailContent) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
@@ -29,10 +33,7 @@ public class EmailHandler {
         } catch (MailAuthenticationException e) {
 //            log.error("Mail Authentication failed for email: {}", toEmail, e);
 //            log.error("Authentication failed with error: {}", e.getMessage());
-            throw new RuntimeException("Mail authentication failed", e);
-        } catch (Exception e) {
-//            log.error("Error occurred while sending email", e);
-            throw new RuntimeException("Error occurred while sending email", e);
+            throw new MailAunthenticationException();
         }
     }
 }

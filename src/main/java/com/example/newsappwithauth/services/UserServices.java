@@ -14,7 +14,7 @@ import java.util.List;
 
 @Service
 public interface UserServices {
-    ResponseEntity<ResponseDTO<UserRegisterResponse>> registerUser(UserRequest userRequest,String otp);
+    ResponseEntity<ResponseDTO<UserRegisterResponse>> registerUser(UserRequest userRequest, String otp);
 
     ResponseEntity<ResponseDTO<UserLoginResponse>> loginUser(UserRequest userRequest);
 

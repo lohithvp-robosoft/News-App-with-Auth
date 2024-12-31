@@ -48,11 +48,11 @@ public class AppConfig {
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests ->
-                authorizeRequests
+                        authorizeRequests
 //                        .requestMatchers("/api/user/v1/send-otp").permitAll()
-                        .requestMatchers("/api/user/v1/add-bookmark/{newsId}").authenticated()
-                        .requestMatchers("/api/user/v1/all-bookmark").authenticated()
-                        .anyRequest().permitAll()
+                                .requestMatchers("/api/user/v1/add-bookmark/{newsId}").authenticated()
+                                .requestMatchers("/api/user/v1/all-bookmark").authenticated()
+                                .anyRequest().permitAll()
         );
 
         http.sessionManagement(session ->
