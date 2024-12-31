@@ -49,16 +49,10 @@ public class AppConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
+//                        .requestMatchers("/api/user/v1/send-otp").permitAll()
                         .requestMatchers("/api/user/v1/add-bookmark/{newsId}").authenticated()
+                        .requestMatchers("/api/user/v1/all-bookmark").authenticated()
                         .anyRequest().permitAll()
-//                        .requestMatchers("/api/v1/login").permitAll()
-//                        .requestMatchers("/swagger-ui.html").permitAll()
-//                        .requestMatchers("/swagger-ui/index.html").permitAll()
-//                        .requestMatchers("/api/admin").hasRole("ADMIN")
-//                        .requestMatchers("/api/user").hasRole("USER")
-//                        .requestMatchers("/api/v1/delete-employee").hasRole("ADMIN")
-//                        .requestMatchers("/error", "/error/**").permitAll()
-//                        .anyRequest().authenticated()
         );
 
         http.sessionManagement(session ->

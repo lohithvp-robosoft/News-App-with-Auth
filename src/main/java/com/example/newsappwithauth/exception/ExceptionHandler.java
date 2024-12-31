@@ -27,7 +27,7 @@ public class ExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler(value = {Exception.class})
     public ResponseEntity<ResponseDTO<?>> handleGenericException(Exception ex) {
 //        return responseUtil.errorResponse()
-        return new ResponseEntity<>(new ResponseDTO<>(-1, 500, "Internal Server Error: " + ex.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ResponseDTO<>(-1, 500, "Internal Server Error: " + ex, null), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(value = {UserNotFound.class})

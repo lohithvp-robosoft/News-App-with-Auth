@@ -29,6 +29,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
+//        if (request.getRequestURI().equals("/api/user/v1/send-otp")) {
+//            filterChain.doFilter(request, response);  // Skip authentication for this endpoint
+//            return;
+//        }
         log.debug("AuthTokenFilter called for URI: {}", request.getRequestURI());
         try {
             String jwt = jwtUtils.getJwtFromHeader(request);

@@ -1,5 +1,6 @@
 package com.example.newsappwithauth.services;
 
+import com.example.newsappwithauth.dto.request.ResetPasswordRequest;
 import com.example.newsappwithauth.dto.request.UserRequest;
 import com.example.newsappwithauth.dto.response.NewsArticleResponse;
 import com.example.newsappwithauth.dto.response.ResponseDTO;
@@ -19,7 +20,6 @@ import com.example.newsappwithauth.utils.ResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -51,23 +51,32 @@ public class UserServicesImpl implements UserServices {
     @Autowired
     private BookmarkRepository bookmarkRepository;
 
+    @Autowired
+    private OtpServices otpServices;
+
+
     @Override
-    public ResponseEntity<ResponseDTO<UserRegisterResponse>> registerUser(UserRequest userRequest) {
-        log.info("Request Body User Role {}", userRequest.getRoles());
-        if (userRepository.existsByEmail(userRequest.getEmail())) {
-            throw new EmailAlreadyExistsException("Email is already taken. Please choose another one.");
+    public ResponseEntity<ResponseDTO<UserRegisterResponse>> registerUser(UserRequest userRequest, String otp) {
+        boolean isOtpValid = otpServices.validateOtp(userRequest.getEmail(), otp);
+        if(isOtpValid) {
+            if (userRepository.existsByEmail(userRequest.getEmail())) {
+                throw new EmailAlreadyExistsException("Email is already taken. Please choose another one.");
+            }
+            User newUser = new User(userRequest.getEmail(), passwordEncoder.encode(userRequest.getPassword()), userRequest.getRoles());
+            log.info("User Role : {}", newUser.getRoles());
+            userRepository.save(newUser);
+            UserRegisterResponse userRegisterResponse = new UserRegisterResponse(newUser);
+            return responseUtil.successResponse(userRegisterResponse);
+
+        }else{
+            return responseUtil.errorResponse("Invalid OTP "+otp);
         }
-        User newUser = new User(userRequest.getEmail(), passwordEncoder.encode(userRequest.getPassword()), userRequest.getRoles());
-        log.info("User Role : {}", newUser.getRoles());
-        userRepository.save(newUser);
-        UserRegisterResponse userRegisterResponse = new UserRegisterResponse(newUser);
-        return responseUtil.successResponse(userRegisterResponse);
     }
 
     @Override
     public ResponseEntity<ResponseDTO<UserLoginResponse>> loginUser(UserRequest userRequest) {
         Optional<User> optionalUser = userRepository.findByEmail(userRequest.getEmail());
-//        log.info("User : {} ,{}, {}",optionalUser.get().getEmail(),optionalUser.get().getPassword(),optionalUser.get().getRoles());
+
         if (!optionalUser.isPresent()) {
             return responseUtil.errorResponse("User Not Found");
         }
@@ -137,13 +146,17 @@ public class UserServicesImpl implements UserServices {
         return responseUtil.errorResponse("Could not get the book mark");
     }
 
-    @Override
-    public ResponseEntity<ResponseDTO<Object>> resetPassword(String email, String newPassword) {
-        Optional<User> optionalUser = Optional.ofNullable(userRepository.findByEmail(email).orElseThrow(UserNotFound::new));
+    public ResponseEntity<ResponseDTO<Object>> resetPassword(ResetPasswordRequest resetPasswordRequest, String otp) {
+        boolean isValidOtp = otpServices.validateOtp(resetPasswordRequest.getEmail(), otp);
+        if(isValidOtp){
+        Optional<User> optionalUser = Optional.ofNullable(userRepository.findByEmail(resetPasswordRequest.getEmail()).orElseThrow(UserNotFound::new));
         User user = optionalUser.get();
-        String encodedPassword = passwordEncoder.encode(newPassword);
+        String encodedPassword = passwordEncoder.encode(resetPasswordRequest.getNewPassword());
         user.setPassword(encodedPassword);
         userRepository.save(user);
         return responseUtil.successResponse(null, "Successfully updated the password");
+    }else{
+            return responseUtil.errorResponse("Invalid OTP "+otp);
+        }
     }
 }

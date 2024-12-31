@@ -1,5 +1,6 @@
 package com.example.newsappwithauth.services;
 
+import com.example.newsappwithauth.dto.request.ResetPasswordRequest;
 import com.example.newsappwithauth.dto.request.UserRequest;
 import com.example.newsappwithauth.dto.response.NewsArticleResponse;
 import com.example.newsappwithauth.dto.response.ResponseDTO;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Service
 public interface UserServices {
-    ResponseEntity<ResponseDTO<UserRegisterResponse>> registerUser(UserRequest userRequest);
+    ResponseEntity<ResponseDTO<UserRegisterResponse>> registerUser(UserRequest userRequest,String otp);
 
     ResponseEntity<ResponseDTO<UserLoginResponse>> loginUser(UserRequest userRequest);
 
@@ -21,6 +22,6 @@ public interface UserServices {
 
     ResponseEntity<ResponseDTO<List<NewsArticleResponse>>> getAllBookMarkOfUser(HttpServletRequest request);
 
-    ResponseEntity<ResponseDTO<Object>> resetPassword(String email, String newPassword);
+    ResponseEntity<ResponseDTO<Object>> resetPassword(ResetPasswordRequest resetPasswordRequest, String otp);
 
 }
