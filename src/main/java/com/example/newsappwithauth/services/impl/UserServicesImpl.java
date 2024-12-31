@@ -1,4 +1,4 @@
-package com.example.newsappwithauth.services;
+package com.example.newsappwithauth.services.impl;
 
 import com.example.newsappwithauth.dto.request.ResetPasswordRequest;
 import com.example.newsappwithauth.dto.request.UserRequest;
@@ -16,6 +16,8 @@ import com.example.newsappwithauth.modal.User;
 import com.example.newsappwithauth.repository.BookmarkRepository;
 import com.example.newsappwithauth.repository.NewsRepository;
 import com.example.newsappwithauth.repository.UserRepository;
+import com.example.newsappwithauth.services.OtpServices;
+import com.example.newsappwithauth.services.UserServices;
 import com.example.newsappwithauth.utils.EmailHandler;
 import com.example.newsappwithauth.utils.ResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;

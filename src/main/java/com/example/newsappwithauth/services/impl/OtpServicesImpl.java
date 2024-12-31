@@ -1,6 +1,7 @@
-package com.example.newsappwithauth.services;
+package com.example.newsappwithauth.services.impl;
 
 import com.example.newsappwithauth.dto.response.ResponseDTO;
+import com.example.newsappwithauth.services.OtpServices;
 import com.example.newsappwithauth.utils.EmailHandler;
 import com.example.newsappwithauth.utils.ResponseUtil;
 import lombok.extern.log4j.Log4j2;
