@@ -1,6 +1,7 @@
 package com.example.newsappwithauth.services.impl;
 
 import com.example.newsappwithauth.dto.request.ResetPasswordRequest;
+import com.example.newsappwithauth.dto.request.UserLoginRequest;
 import com.example.newsappwithauth.dto.request.UserRequest;
 import com.example.newsappwithauth.dto.response.NewsArticleResponse;
 import com.example.newsappwithauth.dto.response.ResponseDTO;
@@ -87,7 +88,7 @@ public class UserServicesImpl implements UserServices {
     }
 
     @Override
-    public ResponseEntity<ResponseDTO<UserLoginResponse>> loginUser(UserRequest userRequest) {
+    public ResponseEntity<ResponseDTO<UserLoginResponse>> loginUser(UserLoginRequest userRequest) {
         Optional<User> optionalUser = userRepository.findByEmail(userRequest.getEmail());
 
         if (!optionalUser.isPresent()) {

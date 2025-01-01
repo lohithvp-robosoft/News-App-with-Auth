@@ -2,6 +2,7 @@ package com.example.newsappwithauth.controller;
 
 import com.example.newsappwithauth.dto.request.ForgotPasswordRequest;
 import com.example.newsappwithauth.dto.request.ResetPasswordRequest;
+import com.example.newsappwithauth.dto.request.UserLoginRequest;
 import com.example.newsappwithauth.dto.request.UserRequest;
 import com.example.newsappwithauth.dto.response.NewsArticleResponse;
 import com.example.newsappwithauth.dto.response.ResponseDTO;
@@ -53,7 +54,7 @@ public class UserController {
     }
 
     @PostMapping("/v1/login")
-    public ResponseEntity<ResponseDTO<UserLoginResponse>> loginUser(@Valid @RequestBody UserRequest userRequest) {
+    public ResponseEntity<ResponseDTO<UserLoginResponse>> loginUser(@Valid @RequestBody UserLoginRequest userRequest) {
         return userServices.loginUser(userRequest);
     }
 
